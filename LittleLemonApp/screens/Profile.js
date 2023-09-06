@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Pressable, Image, StatusBar,ScrollView, TextInput } from "react-native";
 import logo from '../images/Logo.png'
+import profilePic  from  '../images/Profile.png'
 
 export default function Profile() {
     return (
@@ -21,13 +22,20 @@ export default function Profile() {
                     <View>
                         <Text style={{marginBottom: 4}}>Avatar</Text>
                         <View style={profileStyle.AvatarBox}>
-                               
+                            <Image source={profilePic} accessibilityLabel="default picture" style={profileStyle.imgProfile}></Image>
+                            <Pressable style={profileStyle.button2}>
+                                <Text style={profileStyle.button2Text}>Change</Text>
+                            </Pressable>
+                            <Pressable style={{...profileStyle.button2, backgroundColor:'white', borderWidth: 1, borderColor: '#495850'}}>
+                                <Text style={{color: '#495850'}}>Remove</Text>
+                            </Pressable>
                         </View>
                     </View>
                     <TextInputBox subject={"First name"} value={"Tilly"} onChangeText={(text)=>{}}></TextInputBox>
                     <TextInputBox subject={"Last name"} value={"Doe"} onChangeText={(text)=>{}}></TextInputBox>
                     <TextInputBox subject={"Email"} value={"tillydoe@example.com"} onChangeText={(text)=>{}}></TextInputBox>
                     <TextInputBox subject={"Phone number"} value={"(217) 555-0113"} onChangeText={(text)=>{}}></TextInputBox>
+                    <Text style={profileStyle.categoryText}>Email notifications</Text>
                 </ScrollView>
            </View>
            <View style={profileStyle.ControlBox}>
@@ -60,8 +68,13 @@ const formStyle = StyleSheet.create(
 
 const profileStyle = StyleSheet.create(
     {
+        imgProfile:{
+            width: 75,
+            height: 75,
+        },
         container: {flex: 1,
-             marginTop: StatusBar.currentHeight},
+             marginTop: StatusBar.currentHeight,
+            backgroundColor: 'white'},
       headerBox:{
         flex: 0.10,
         flexDirection: 'row',
@@ -91,12 +104,23 @@ const profileStyle = StyleSheet.create(
       },
       categoryText:{
         fontSize: 17,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginVertical: 7
       },
       AvatarBox: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        gap: 10
+        gap: 10,
+        alignItems: 'center'
+      },
+      button2:{
+        backgroundColor: '#495850',
+        paddingVertical: 10,
+        paddingHorizontal: 14,
+        borderRadius: 8
+      },
+      button2Text: {
+        color: 'white'
       }
       
     }
