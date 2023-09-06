@@ -2,8 +2,9 @@
 import { View, StyleSheet, Image,StatusBar, Text, TextInput, Pressable, Alert } from "react-native";
 import logo from '../images/Logo.png'
 import { useEffect, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Onboarding(){
+export default function Onboarding({navigation}){
     const [firstName, setFirstName] = useState('')
     const [email, setEmail] = useState('')
     const [allValid, setValidity] = useState(false)
@@ -24,6 +25,14 @@ export default function Onboarding(){
         ()=>{
             setValidity(validateFields(firstName, email))
         },[firstName, email])
+
+    
+
+    const goToNext =  async ()=>{
+        await AsyncStorage.setItem('isUserSigned', JSON.stringify(true))
+        await AsyncStorage.setItem('userData', JSON.stringify({firstName: firstName, email: email}))
+        navigation.navigate('Home')
+    }
 
     return ( <View style={onboardStyle.container}>
         <View style={{flex: 0.125, 
@@ -51,7 +60,7 @@ export default function Onboarding(){
             </View>
         </View>
         <View style = {{flex: 0.2, justifyContent: 'center', alignItems: 'flex-end', marginHorizontal: 30}}>
-            <Pressable disabled={!allValid}  style={onboardStyle.button} onPressIn={()=>goToNext()}>
+            <Pressable disabled={!allValid}  style={onboardStyle.button} onPress={goToNext}>
                 <Text style={onboardStyle.bodyText}>Next</Text>
             </Pressable>
         </View>
@@ -60,10 +69,6 @@ export default function Onboarding(){
 
 
 
-const goToNext = ()=>{
-    Alert.alert("Onboard Complete", "COmpleted action")
-}
-
 const onboardStyle = StyleSheet.create(
     {
         container: {
@@ -71,7 +76,6 @@ const onboardStyle = StyleSheet.create(
             marginTop: StatusBar.currentHeight,
             
         }
-
         ,
         imgHeader:{
             width: '100%',
