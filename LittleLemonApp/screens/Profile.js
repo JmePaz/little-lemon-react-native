@@ -5,6 +5,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaskedTextInput } from "react-native-mask-text";
+import * as ImagePicker from 'expo-image-picker'
 
 function transStateMap(arr){
     return {
@@ -35,6 +36,8 @@ export default function Profile({navigation}) {
         specialOffer: transStateMap(useState(false)),
         newsLetter: transStateMap(useState(false))
     }
+
+    const [profileImage, setProfileImage] = useState(null)
 
     let tempUserData = useRef({});
     let tempUserPreferences = useRef(Object.fromEntries(Object.entries(userPreferences).map((k,v)=>[k, v.value])));
@@ -110,6 +113,19 @@ export default function Profile({navigation}) {
 
     }
 
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        if (!result.canceled) {
+          setProfileImage(result.assets[0].uri);
+        }
+      };
+
     //start/initial method
     useEffect(()=>{StartFetch()}, [])
     
@@ -126,9 +142,7 @@ export default function Profile({navigation}) {
                 </Pressable>
                 <Image source={logo} accessibilityLabel="Logo">
                 </Image>
-                <View style={{backgroundColor: '#89a6b8', padding: 10, borderRadius:20}}>
-                    <Text style={{color: 'white'}}>JD</Text>
-                </View>
+                <ProfilePicture source={{uri: profileImage}}/>
 
            </View>
            <View style={profileStyle.InfoBox}> 
@@ -137,11 +151,12 @@ export default function Profile({navigation}) {
                     <View>
                         <Text style={{marginBottom: 4}}>Avatar</Text>
                         <View style={profileStyle.AvatarBox}>
-                            <Image source={profilePic} accessibilityLabel="default picture" style={profileStyle.imgProfile}></Image>
-                            <Pressable style={profileStyle.button2}>
+                            <ProfilePicture source={{uri: profileImage}}/>
+                            <Pressable style={profileStyle.button2} onPress={pickImage}>
                                 <Text style={profileStyle.button2Text}>Change</Text>
                             </Pressable>
-                            <Pressable style={{...profileStyle.button2, backgroundColor:'white', borderWidth: 1, borderColor: '#495850'}}>
+                            <Pressable style={{...profileStyle.button2, backgroundColor:'white', borderWidth: 1, borderColor: '#495850'}}
+                                onPress={()=>setProfileImage(null)}>
                                 <Text style={{color: '#495850'}}>Remove</Text>
                             </Pressable>
                         </View>
@@ -181,6 +196,20 @@ export default function Profile({navigation}) {
         </View>
     );
 
+}
+
+const ProfilePicture = ({source}) => {
+    if(source===null){
+        return (
+        <View style={{backgroundColor: '#89a6b8', padding: 10, borderRadius:20}}>
+            <Text style={{color: 'white'}}>JD</Text>
+        </View>
+        )
+    }
+
+    return (
+        <Image source={source} accessibilityLabel="default picture" style={profileStyle.imgProfile}></Image>
+    )
 }
 
 const TextInputBox = ({subject, value, onChangeText, keyboardType})=>{
@@ -226,6 +255,7 @@ const profileStyle = StyleSheet.create(
         imgProfile:{
             width: 75,
             height: 75,
+            borderRadius: 40
         },
         container: {flex: 1,
              marginTop: StatusBar.currentHeight,
