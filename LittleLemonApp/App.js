@@ -12,6 +12,7 @@ export default function App() {
   const [isUserSigned, setUserSigned] = useState(null)
 
   async function getData ()  {
+
     try {
       const value = JSON.parse(await AsyncStorage.getItem('isUserSigned'));
       if (value !== null) {
