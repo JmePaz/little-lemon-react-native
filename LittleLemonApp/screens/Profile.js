@@ -44,6 +44,12 @@ export default function Profile({navigation}) {
     
     const StartFetch = async () => {
         try{
+            //USER PICTURE
+            const userPic = await AsyncStorage.getItem("profilePic")
+            setProfileImage(userPic)
+
+            //USER DATA & PREFENCES
+
             //fetch from local
             const data = await AsyncStorage.getItem("userData")
             const dataJSON = JSON.parse(data)
@@ -69,6 +75,8 @@ export default function Profile({navigation}) {
                     return [k, v]
                 })
             }
+
+            
             
         }
         catch(err){
@@ -81,12 +89,14 @@ export default function Profile({navigation}) {
             const userDataToSave = iterateObjects(userData, (k,v)=>{
                 return [k, v.value]
             })
+            tempUserData.current = userDataToSave
             
             await AsyncStorage.setItem("userData", JSON.stringify(userDataToSave))
 
             const userPreferencesToSave = iterateObjects(userPreferences, (k,v)=>{
                 return [k, v.value]
             })
+            tempUserPreferences.current = userPreferencesToSave
             await AsyncStorage.setItem("userPreferences", JSON.stringify(userPreferencesToSave))
             Alert.alert("Status", "Saved Data")
         }
@@ -123,26 +133,28 @@ export default function Profile({navigation}) {
     
         if (!result.canceled) {
           setProfileImage(result.assets[0].uri);
+          await AsyncStorage.setItem("profilePic", result.assets[0].uri)
         }
       };
 
     //start/initial method
     useEffect(()=>{StartFetch()}, [])
     
+    const nameInitials = userData.firstName.value.charAt(0) + userData.lastName.value?.charAt(0)
+
     return (
         <View style={profileStyle.container}>
            <View style={profileStyle.headerBox}>
                 <Pressable onPress={
                     async ()=>{
-                        await AsyncStorage.clear()
-                        navigation.navigate("OnBoarding")
+                       navigation.navigate("Home")
                     }
                 }>
                     <Text>Back</Text>
                 </Pressable>
                 <Image source={logo} accessibilityLabel="Logo">
                 </Image>
-                <ProfilePicture source={{uri: profileImage}}/>
+                <ProfilePicture source={{uri: profileImage}} width={50} height={50} defaultText={nameInitials}/>
 
            </View>
            <View style={profileStyle.InfoBox}> 
@@ -151,12 +163,15 @@ export default function Profile({navigation}) {
                     <View>
                         <Text style={{marginBottom: 4}}>Avatar</Text>
                         <View style={profileStyle.AvatarBox}>
-                            <ProfilePicture source={{uri: profileImage}}/>
+                            <ProfilePicture source={{uri: profileImage}} width={75} height={75} defaultText={nameInitials}/>
                             <Pressable style={profileStyle.button2} onPress={pickImage}>
                                 <Text style={profileStyle.button2Text}>Change</Text>
                             </Pressable>
                             <Pressable style={{...profileStyle.button2, backgroundColor:'white', borderWidth: 1, borderColor: '#495850'}}
-                                onPress={()=>setProfileImage(null)}>
+                                onPress={async ()=>{
+                                    setProfileImage(null)
+                                    await AsyncStorage.removeItem("profilePic")
+                                    }}>
                                 <Text style={{color: '#495850'}}>Remove</Text>
                             </Pressable>
                         </View>
@@ -189,7 +204,9 @@ export default function Profile({navigation}) {
                     </View>
            </View>
            <View style={profileStyle.ControlBox}>
-              <Pressable style={profileStyle.Button1}>
+              <Pressable style={profileStyle.Button1} onPress={async ()=>{
+                    await AsyncStorage.clear()
+                    navigation.navigate("OnBoarding")}}>
                     <Text style={profileStyle.Button1Text}>Log Out</Text>
               </Pressable>
            </View>
@@ -198,17 +215,17 @@ export default function Profile({navigation}) {
 
 }
 
-const ProfilePicture = ({source}) => {
-    if(source===null){
+const ProfilePicture = ({source, defaultText, width, height}) => {
+    if(source===null || ('uri' in source && source['uri']===null)){
         return (
-        <View style={{backgroundColor: '#89a6b8', padding: 10, borderRadius:20}}>
-            <Text style={{color: 'white'}}>JD</Text>
+        <View style={{backgroundColor: '#89a6b8', padding: 10, borderRadius:20, width: width, height: height, justifyContent: 'center'}}>
+            <Text style={{color: 'white', textAlign: 'center', fontSize: width/3 }}>{defaultText}</Text>
         </View>
         )
     }
 
     return (
-        <Image source={source} accessibilityLabel="default picture" style={profileStyle.imgProfile}></Image>
+        <Image source={source} accessibilityLabel="selected picture" style={profileStyle.imgProfile} width={width} height={height}></Image>
     )
 }
 
@@ -253,8 +270,6 @@ const formStyle = StyleSheet.create(
 const profileStyle = StyleSheet.create(
     {
         imgProfile:{
-            width: 75,
-            height: 75,
             borderRadius: 40
         },
         container: {flex: 1,
