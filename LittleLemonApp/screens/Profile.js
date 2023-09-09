@@ -1,34 +1,13 @@
 import { View, Text, StyleSheet, Pressable, Image, StatusBar,ScrollView, TextInput, Alert } from "react-native";
 import logo from '../images/Logo.png'
-
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaskedTextInput } from "react-native-mask-text";
 import * as ImagePicker from 'expo-image-picker'
-
-function transStateMap(arr){
-    return {
-        value: arr[0],
-        setValue: arr[1]
-    }
-}
-
-function dialogueConfirm(title, msg,action,confirmText="Yes", cancelText="Cancel"){
-    Alert.alert(
-        title, msg, [
-            {
-              text: cancelText,
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            {text: confirmText,
-             onPress: () => action()
-            },
-          ]
-    )
-}
+import ProfilePicture from "../components/ProfilePicture";
+import {transStateMap, dialogueConfirm} from '../components/Utility'
 
 export default function Profile({navigation}) {
     function iterateObjects(obj, invokeAction){
@@ -186,7 +165,7 @@ export default function Profile({navigation}) {
            <View style={profileStyle.headerBox}>
                 <Pressable onPress={
                     async ()=>{
-                        navigation.goBack()
+                        navigation.navigate("OnBoarding")
                     }
                 }>
                     <Ionicons name={"arrow-back"} size={32} color={"#495850"}></Ionicons>
@@ -257,20 +236,6 @@ export default function Profile({navigation}) {
 
 }
 
-const ProfilePicture = ({source, defaultText, width, height}) => {
-    if(source===null || ('uri' in source && source['uri']===null)){
-        return (
-        <View style={{backgroundColor: '#89a6b8', padding: 10, borderRadius:20, width: width, height: height, justifyContent: 'center'}}>
-            <Text style={{color: 'white', textAlign: 'center', fontSize: width/3 }}>{defaultText}</Text>
-        </View>
-        )
-    }
-
-    return (
-        <Image source={source} accessibilityLabel="selected picture" style={profileStyle.imgProfile} width={width} height={height}></Image>
-    )
-}
-
 const TextInputBox = ({subject, value, onChangeText, keyboardType})=>{
     return (<View style={{marginVertical: 10}}>
         <Text style={{marginBottom: 4}}>{subject}</Text>
@@ -311,9 +276,7 @@ const formStyle = StyleSheet.create(
 
 const profileStyle = StyleSheet.create(
     {
-        imgProfile:{
-            borderRadius: 40
-        },
+       
         container: {flex: 1,
              marginTop: StatusBar.currentHeight,
             backgroundColor: 'white'},
