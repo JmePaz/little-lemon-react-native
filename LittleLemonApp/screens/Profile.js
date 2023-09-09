@@ -158,14 +158,14 @@ export default function Profile({navigation}) {
 
 
     
-    const nameInitials = userData.firstName.value.charAt(0) + userData.lastName.value?.charAt(0)
+    const nameInitials = userData.firstName.value.charAt(0) + (userData.lastName.value===""?".":userData.lastName.value?.charAt(0))
 
     return (
         <View style={profileStyle.container}>
            <View style={profileStyle.headerBox}>
                 <Pressable onPress={
-                    async ()=>{
-                        navigation.navigate("OnBoarding")
+                    ()=>{
+                        navigation.navigate("Home")
                     }
                 }>
                     <Ionicons name={"arrow-back"} size={32} color={"#495850"}></Ionicons>
