@@ -42,7 +42,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={isUserSigned?"Profile":"OnBoarding"} screenOptions={{headerShown: false}} >
+      <Stack.Navigator initialRouteName={isUserSigned?"Home":"OnBoarding"} screenOptions={{headerShown: false}} >
         <Stack.Screen name="OnBoarding" component={Onboarding}/>
         <Stack.Screen name="Profile" component={Profile}/>
         <Stack.Screen name="Home" component={Home}/>
