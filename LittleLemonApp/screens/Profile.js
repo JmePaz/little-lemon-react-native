@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Pressable, Image, StatusBar,ScrollView, TextInput, Alert } from "react-native";
 import logo from '../images/Logo.png'
-import profilePic  from  '../images/Profile.png'
+
+import Ionicons from '@expo/vector-icons/Ionicons';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,6 +13,21 @@ function transStateMap(arr){
         value: arr[0],
         setValue: arr[1]
     }
+}
+
+function dialogueConfirm(title, msg,action,confirmText="Yes", cancelText="Cancel"){
+    Alert.alert(
+        title, msg, [
+            {
+              text: cancelText,
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {text: confirmText,
+             onPress: () => action()
+            },
+          ]
+    )
 }
 
 export default function Profile({navigation}) {
@@ -40,7 +56,7 @@ export default function Profile({navigation}) {
     const [profileImage, setProfileImage] = useState(null)
 
     let tempUserData = useRef({});
-    let tempUserPreferences = useRef(Object.fromEntries(Object.entries(userPreferences).map((k,v)=>[k, v.value])));
+    let tempUserPreferences = useRef({});
     
     const StartFetch = async () => {
         try{
@@ -53,6 +69,7 @@ export default function Profile({navigation}) {
             //fetch from local
             const data = await AsyncStorage.getItem("userData")
             const dataJSON = JSON.parse(data)
+
 
             //FOR USER DATA
             tempUserData.current = iterateObjects(dataJSON, (k,v)=>{
@@ -75,7 +92,9 @@ export default function Profile({navigation}) {
                     return [k, v]
                 })
             }
-
+            else{
+                tempUserPreferences.current = resetUserPrefences()
+            }
             
             
         }
@@ -111,15 +130,16 @@ export default function Profile({navigation}) {
             if(k in userData){
                 userData[k].setValue(v)
             }
+            
             return [k, v]
         })
-
         iterateObjects(tempUserPreferences.current, (k,v)=>{
             if(k in userPreferences){
                 userPreferences[k].setValue(v)
             }
             return [k, v]
         })
+        
 
     }
 
@@ -137,8 +157,27 @@ export default function Profile({navigation}) {
         }
       };
 
-    //start/initial method
-    useEffect(()=>{StartFetch()}, [])
+    const logOut = async () => {
+        await AsyncStorage.clear()
+        navigation.navigate("OnBoarding")
+    }
+
+    const resetUserPrefences= ()=>{
+        return iterateObjects(userPreferences, (k, v)=>{
+            userPreferences[k].setValue(false)
+            return [k, false]
+        })
+    }
+
+    //start/initial method when the screen is focused
+    useEffect(()=>{
+        const unsubscribe = navigation.addListener('focus', ()=>{        
+            StartFetch()
+        })
+        return unsubscribe
+    }, [navigation])
+
+
     
     const nameInitials = userData.firstName.value.charAt(0) + userData.lastName.value?.charAt(0)
 
@@ -147,15 +186,14 @@ export default function Profile({navigation}) {
            <View style={profileStyle.headerBox}>
                 <Pressable onPress={
                     async ()=>{
-                       navigation.navigate("Home")
+                        navigation.goBack()
                     }
                 }>
-                    <Text>Back</Text>
+                    <Ionicons name={"arrow-back"} size={32} color={"#495850"}></Ionicons>
                 </Pressable>
                 <Image source={logo} accessibilityLabel="Logo">
                 </Image>
                 <ProfilePicture source={{uri: profileImage}} width={50} height={50} defaultText={nameInitials}/>
-
            </View>
            <View style={profileStyle.InfoBox}> 
                 <ScrollView style={{paddingVertical: 5, paddingHorizontal: 10, marginBottom: 10}}>
@@ -191,9 +229,10 @@ export default function Profile({navigation}) {
                 </ScrollView>
                 <View style={formStyle.updateControls}>
                         <Pressable style={{...profileStyle.button2, backgroundColor:'white', borderWidth: 1, borderColor: '#495850'}}
-                           onPress={()=>{
-                            DiscardChanges()
-                           }}>
+                           onPress={()=>dialogueConfirm(
+                            "Changes", "Are you sure you want to discard changes?",
+                            ()=>{DiscardChanges()}
+                        )}>
                             <Text style={{color: '#495850'}}>Discard Changes</Text>
                         </Pressable>
                         <Pressable style={profileStyle.button2} onPress={()=>{
@@ -204,9 +243,12 @@ export default function Profile({navigation}) {
                     </View>
            </View>
            <View style={profileStyle.ControlBox}>
-              <Pressable style={profileStyle.Button1} onPress={async ()=>{
-                    await AsyncStorage.clear()
-                    navigation.navigate("OnBoarding")}}>
+              <Pressable style={profileStyle.Button1} onPress={ ()=>
+                    dialogueConfirm(
+                        "Logout", "Are you sure you want to Logout?",
+                        ()=>{logOut()}
+                    )
+                    }>
                     <Text style={profileStyle.Button1Text}>Log Out</Text>
               </Pressable>
            </View>

@@ -24,13 +24,22 @@ export default function Onboarding({navigation}){
     useEffect(
         ()=>{
             setValidity(validateFields(firstName, email))
-        },[firstName, email])
+    },[firstName, email])
 
-    
+    useEffect(
+    ()=>{
+        const unsubscribe = navigation.addListener('focus',()=>{
+            setFirstName("")
+            setEmail("")
+            setValidity(false)
+        })
+        return unsubscribe;
+    }
+   , [navigation])
 
     const goToNext =  async ()=>{
         await AsyncStorage.setItem('isUserSigned', JSON.stringify(true))
-        await AsyncStorage.setItem('userData', JSON.stringify({firstName: firstName, email: email}))
+        await AsyncStorage.setItem('userData', JSON.stringify({firstName: firstName, email: email, lastName:"", phoneNo:""}))
         navigation.navigate('Home')
     }
 
