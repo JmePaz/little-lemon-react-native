@@ -3,6 +3,8 @@ import logo from '../images/Logo.png'
 import ProfilePicture from "../components/ProfilePicture";
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import heroImg from '../images/HeroImage.png'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 export default function Home({navigation}) {
     const [nameInitials, setNameInitials] = useState("")
@@ -46,13 +48,23 @@ export default function Home({navigation}) {
                     <View style={{flexDirection: 'row', flex: 0.8}}>
                         <View style={{flex: 0.6, justifyContent: 'space-between'}}>
                             <Text style={homeStyle.bodyText}>Chicago</Text>
-                            <Text style={[homeStyle.smallerBodyText]}>We are family owned Mediterranean restaurant,
+                            <Text style={[homeStyle.smallerBodyText, {lineHeight: 25}]}>We are family owned Mediterranean restaurant,
                                 focused on traditional recipes served with a modern twist
                             </Text>
+                        </View>
+                        <View style={{flex: 0.4, justifyContent: 'flex-end'}}>
+                            <Image source={heroImg}  style={{width: 140, height: '95%', borderRadius: 10}} accessibilityLabel="A hero Image" ></Image>
+                        </View>
+                    </View>
+                    <View style={{flex: 0.2 , marginTop: 10}}>
+                        <View style={{backgroundColor: 'white', padding: 10, alignSelf: 'flex-start', borderRadius: 40 }}>
+                            <Ionicons name="md-search-sharp" color={"black"} size={24} >
+                            </Ionicons>
                         </View>
                     </View>
                 </View>
            </View>
+           
         </View>
     );
 }
@@ -67,7 +79,8 @@ const homeStyle = StyleSheet.create({
     heroBox: {flex:0.4, 
         backgroundColor: 
         '#495850',
-         padding: 10},
+         paddingHorizontal: 10,
+        paddingVertical: 8},
     headerText: {
         fontSize: 35,
         color: '#f4ce14',
