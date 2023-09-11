@@ -5,6 +5,9 @@ import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import heroImg from '../images/HeroImage.png'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import CategoryButton from "../components/CategoryBtn";
+import { ScrollView } from "react-native";
+import CardDish from "../components/CardDish";
 
 export default function Home({navigation}) {
     const [nameInitials, setNameInitials] = useState("")
@@ -34,7 +37,7 @@ export default function Home({navigation}) {
 
 
     return (
-        <View style={{flex: 1,marginTop:StatusBar.currentHeight}}>
+        <View style={{flex: 1,marginTop:StatusBar.currentHeight, backgroundColor: 'white'}}>
             <View style={homeStyle.headerBox}>
                 <View style={{flex: 0.25}}/>
                 <Image source={logo} accessibilityLabel="Logo"></Image>
@@ -42,13 +45,13 @@ export default function Home({navigation}) {
                     <ProfilePicture source={{uri:profileImg}} width={50} height={50} defaultText={nameInitials}/>
                 </Pressable>
            </View>
-           <View style={{flex: 0.90}}>
+           <View style={{flex: 0.90, }}>
                 <View style={homeStyle.heroBox}>
                     <Text style={homeStyle.headerText}>Little Lemon</Text>
                     <View style={{flexDirection: 'row', flex: 0.8}}>
                         <View style={{flex: 0.6, justifyContent: 'space-between'}}>
                             <Text style={homeStyle.bodyText}>Chicago</Text>
-                            <Text style={[homeStyle.smallerBodyText, {lineHeight: 25}]}>We are family owned Mediterranean restaurant,
+                            <Text style={[homeStyle.smallerBodyText, {lineHeight: 20}]}>We are family owned Mediterranean restaurant,
                                 focused on traditional recipes served with a modern twist
                             </Text>
                         </View>
@@ -58,10 +61,31 @@ export default function Home({navigation}) {
                     </View>
                     <View style={{flex: 0.2 , marginTop: 10}}>
                         <View style={{backgroundColor: 'white', padding: 10, alignSelf: 'flex-start', borderRadius: 40 }}>
-                            <Ionicons name="md-search-sharp" color={"black"} size={24} >
+                            <Ionicons name="md-search-sharp" color={"black"} size={20} >
                             </Ionicons>
                         </View>
                     </View>
+                </View>
+                <View style ={{ paddingHorizontal: 10, marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#cccccc', flex: 0.14}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold',}}>Order for Delivery</Text>
+                    <ScrollView horizontal={true} >
+                        <CategoryButton text={"SeaFood"}></CategoryButton>
+                        <CategoryButton text={"Pasta"}></CategoryButton>
+                        <CategoryButton text={"Drinks"}></CategoryButton>
+                        <CategoryButton text={"Pasta"}></CategoryButton>
+                        <CategoryButton text={"Drinks"}></CategoryButton>
+                        <CategoryButton text={"Pasta"}></CategoryButton>
+                        <CategoryButton text={"Drinks"}></CategoryButton>
+                    </ScrollView>
+                </View>
+                <View style={{flex: 0.46, marginHorizontal: 10, paddingVertical:5}}>
+                    <ScrollView>
+                        <CardDish title={"Greek Salad"} description={"Our delicious salad is served with Feta cheese and peeled cucumber. Includes tomatoes, onions, olives, salt and oregano in the ingredients."} price={12.99}></CardDish>
+                        <CardDish title={"Greek Salad"} description={"Our delicious salad is served with Feta cheese and peeled cucumber. Includes tomatoes, onions, olives, salt and oregano in the ingredients."} price={12.99}></CardDish>
+                        <CardDish title={"Greek Salad"} description={"Our delicious salad is served with Feta cheese and peeled cucumber. Includes tomatoes, onions, olives, salt and oregano in the ingredients."} price={12.99}></CardDish>
+                        <CardDish title={"Greek Salad"} description={"Our delicious salad is served with Feta cheese and peeled cucumber. Includes tomatoes, onions, olives, salt and oregano in the ingredients."} price={12.99}></CardDish>
+                        <CardDish title={"Greek Salad"} description={"Our delicious salad is served with Feta cheese and peeled cucumber. Includes tomatoes, onions, olives, salt and oregano in the ingredients."} price={12.99}></CardDish>
+                    </ScrollView>
                 </View>
            </View>
            
@@ -76,11 +100,11 @@ const homeStyle = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center'
       },
-    heroBox: {flex:0.4, 
+    heroBox: {flex:0.40, 
         backgroundColor: 
         '#495850',
-         paddingHorizontal: 10,
-        paddingVertical: 8},
+        paddingVertical: 8,
+        paddingHorizontal: 10},
     headerText: {
         fontSize: 35,
         color: '#f4ce14',
