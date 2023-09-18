@@ -1,5 +1,4 @@
 import { View , StyleSheet, Image, Text} from "react-native";
-import heroImg from '../images/HeroImage.png'
 export default function CardDish({title, description, price, sourceImage}){
     return ( <View style={CardDishStyle.container}>
             <View style={{flex: 0.7, paddingEnd: 8}}>
@@ -8,7 +7,7 @@ export default function CardDish({title, description, price, sourceImage}){
                 <Text style={CardDishStyle.priceText}>$ {price}</Text>
             </View>
             <View style={{flex: 0.3, justifyContent: 'center'}} >
-            <Image source={heroImg} style={{width: 100, height: 105, borderRadius: 10}} resizeMode="cover"></Image>
+                <Image source={sourceImage} style={{width: 100, height: 105, borderRadius: 10}} resizeMode="cover"></Image>
             </View>
         </View>)
 }

@@ -21,7 +21,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.jmepaz.LittleLemonApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +37,17 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a092ab54-5de5-4e6f-a5ef-5b964946601e"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a092ab54-5de5-4e6f-a5ef-5b964946601e"
+    }
   }
 }

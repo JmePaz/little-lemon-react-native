@@ -8,7 +8,7 @@ export default function CategoryButton({text, onPressAction}){
    return ( <Pressable style={[CategoryButtonStyle.container, {backgroundColor: isActivated?'#495850':'#edefee'}]}
          onPress={()=>{
                 setActivation(!isActivated)
-                //onPressAction()
+                onPressAction(!isActivated)
             }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={[CategoryButtonStyle.text, {color: isActivated?'#f4ce14':'#495e57'}]}>{text}</Text>

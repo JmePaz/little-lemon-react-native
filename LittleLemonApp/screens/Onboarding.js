@@ -21,6 +21,7 @@ export default function Onboarding({navigation}){
 
     }
 
+
     useEffect(
         ()=>{
             setValidity(validateFields(firstName, email))
